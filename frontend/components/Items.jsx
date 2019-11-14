@@ -4,6 +4,8 @@ import gql from "graphql-tag";
 import styled from "styled-components";
 
 import Item from "./Item";
+import Pagination from "./Pagination";
+import { perPage } from "../config";
 
 const Center = styled.div`
   text-align: center;
@@ -18,8 +20,8 @@ const ItemsList = styled.div`
 `;
 
 const ALL_ITEMS_QUERY = gql`
-  query ALL_ITEMS_QUERY {
-    items {
+  query ALL_ITEMS_QUERY($first: Int = 0, $skip: Int = ${perPage}) {
+    items(first: $first, skip: $skip, orderBy: createdAt_DESC) {
       title
       price
       description
@@ -29,12 +31,19 @@ const ALL_ITEMS_QUERY = gql`
     }
   }
 `;
+
 class Items extends Component {
   render() {
     return (
-      <div>
-        <p>Items</p>
-        <Query query={ALL_ITEMS_QUERY}>
+      <Center>
+        <Pagination page={this.props.page} />
+        <Query
+          query={ALL_ITEMS_QUERY}
+          variables={{
+            skip: this.props.page * perPage - perPage,
+            first: perPage
+          }}
+        >
           {({ data, error, loading }) => {
             if (loading) return <p>Loading...</p>;
             if (error) return <p>Error: {error.message}</p>;
@@ -47,7 +56,8 @@ class Items extends Component {
             );
           }}
         </Query>
-      </div>
+        <Pagination page={this.props.page} />
+      </Center>
     );
   }
 }

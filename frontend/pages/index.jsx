@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import Items from '../components/Items'
+import Items from "../components/Items";
 
-export default class index extends Component {
-  render() {
-    return (
-      <div>
-        <Items></Items>
-      </div>
-    )
-  }
-}
+const Home = props => {
+  return (
+    <div>
+      <Items page={parseFloat(props.query.page) || 1} />
+    </div>
+  );
+};
+
+export default Home;

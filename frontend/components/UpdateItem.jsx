@@ -1,9 +1,7 @@
 import React, { Component } from "react";
 import { Mutation, Query } from "react-apollo";
-import Router from "next/router";
 import gql from "graphql-tag";
 import Form from "./styles/Form";
-import formatMoney from "../lib/formatMoney";
 import Error from "./ErrorMessage";
 
 const SINGLE_ITEM_QUERY = gql`
@@ -13,6 +11,8 @@ const SINGLE_ITEM_QUERY = gql`
       title
       description
       price
+      image
+      largeImage
     }
   }
 `;

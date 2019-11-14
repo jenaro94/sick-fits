@@ -26,6 +26,7 @@ export default class Item extends Component {
     return (
       <ItemStyles>
         {item.image && <img src={item.image} alt={item.title} />}
+        <PriceTag>{formatMoney(item.price)}</PriceTag>
         <Title>
           <Link
             href={{
@@ -35,7 +36,6 @@ export default class Item extends Component {
           >
             <a>{item.title}</a>
           </Link>
-          <PriceTag>{formatMoney(item.price)}</PriceTag>
           <p>{item.description}</p>
           <div className="buttonList">
             <Link
@@ -44,7 +44,7 @@ export default class Item extends Component {
                 query: { id }
               }}
             >
-              <a>Edit ✏ </a>
+              <a>Edit</a>
             </Link>
             <button>Add To Cart</button>
             <DeleteItem id={id}>Delete this item</DeleteItem>

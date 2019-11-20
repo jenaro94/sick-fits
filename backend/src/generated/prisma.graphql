@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/jenaro-calvino-76f1cc/sick-fits/dev
-# timestamp: Thu Nov 14 2019 18:08:05 GMT-0300 (Argentina Standard Time)
+# timestamp: Thu Nov 14 2019 18:45:25 GMT-0300 (Argentina Standard Time)
 
 type AggregateItem {
   count: Int!
@@ -503,9 +503,9 @@ type User implements Node {
   name: String!
   email: String!
   password: String!
-  resetToken: String!
-  resetTokenExpiry: String!
-  permission: [Permission!]!
+  resetToken: String
+  resetTokenExpiry: String
+  permissions: [Permission!]!
 }
 
 """A connection to a list of items."""
@@ -523,12 +523,12 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
-  resetToken: String!
-  resetTokenExpiry: String!
-  permission: UserCreatepermissionInput
+  resetToken: String
+  resetTokenExpiry: String
+  permissions: UserCreatepermissionsInput
 }
 
-input UserCreatepermissionInput {
+input UserCreatepermissionsInput {
   set: [Permission!]
 }
 
@@ -561,9 +561,9 @@ type UserPreviousValues {
   name: String!
   email: String!
   password: String!
-  resetToken: String!
-  resetTokenExpiry: String!
-  permission: [Permission!]!
+  resetToken: String
+  resetTokenExpiry: String
+  permissions: [Permission!]!
 }
 
 type UserSubscriptionPayload {
@@ -611,7 +611,7 @@ input UserUpdateInput {
   password: String
   resetToken: String
   resetTokenExpiry: String
-  permission: UserUpdatepermissionInput
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateManyMutationInput {
@@ -620,10 +620,10 @@ input UserUpdateManyMutationInput {
   password: String
   resetToken: String
   resetTokenExpiry: String
-  permission: UserUpdatepermissionInput
+  permissions: UserUpdatepermissionsInput
 }
 
-input UserUpdatepermissionInput {
+input UserUpdatepermissionsInput {
   set: [Permission!]
 }
 

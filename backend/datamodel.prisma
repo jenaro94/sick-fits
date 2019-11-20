@@ -12,9 +12,9 @@ type User {
   name: String!
   email: String! @unique
   password: String!
-  resetToken: String!
-  resetTokenExpiry: String!
-  permission: [Permission] @scalarList(strategy: RELATION)
+  resetToken: String
+  resetTokenExpiry: String
+  permissions: [Permission] @scalarList(strategy: RELATION)
 }
 
 type Item {

@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { randomBytes } = require('crypto')
+const { promisify } = require('util')
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
@@ -95,7 +97,65 @@ const Mutations = {
   signOut(parent, args, ctx, info) {
     ctx.response.clearCookie('token')
     return { message: 'Good bye!' }
-  }
+  },
+  async requestReset(parent, { email }, ctx, info) {
+    // Check if user is real
+    const user = await ctx.db.query.user({ where: { email } })
+    if (!user) {
+      throw new Error(`No user found for email ${email}`)
+    }
+
+    // Set reset token and expiry on user
+    const randomBytesPromisified = promisify(randomBytes)
+    const resetToken = (await randomBytesPromisified(20)).toString('hex')
+    const resetTokenExpiry = Date.now() + 3600000 //1 hour
+    const res = await ctx.db.mutation.updateUser({
+      where: { email },
+      data: { resetToken, resetTokenExpiry },
+    })
+
+    // Email the the reset token
+    return { message: 'The reset password token has been sent to your email' }
+  },
+  async resetPassword(parent, args, ctx, info) {
+    const { password, confirmPassword, resetToken } = args
+    //check if passwords match
+    if (password !== confirmPassword) {
+      throw new Error('Passwords need to match!')
+    }
+    //check if token is real
+    //check if token is expired
+    const [user] = await ctx.db.query.users({
+      where: { resetToken, resetTokenExpiry_gte: Date.now() - 3600000 },
+    })
+    if (!user) {
+      throw new Error('That reset token does not exist or the token is expired')
+    }
+
+    //hash new password
+    const newPassword = await bcrypt.hash(password, 10)
+
+    //save new password and remove reset tokens
+    const newUser = await ctx.db.mutation.updateUser({
+      data: {
+        password: newPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+      where: { email: user.email },
+    })
+    //generate JWT
+    const token = jwt.sign({ userId: newUser.id }, process.env.APP_SECRET)
+
+    //set JWT cookie
+    ctx.response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365,
+    })
+    //return the new user
+
+    return newUser
+  },
 }
 
 module.exports = Mutations

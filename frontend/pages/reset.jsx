@@ -3,7 +3,7 @@ import Reset from '../components/Reset'
 
 const ResetPage = props => (
   <div>
-    <Reset props={props.query.resetToken}/>
+    <Reset resetToken={props.query.resetToken}/>
   </div>
 )
 
